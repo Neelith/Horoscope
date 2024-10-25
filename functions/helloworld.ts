@@ -5,5 +5,5 @@ interface Env {
 type Context = EventContext<Env, string, unknown>;
 
 export async function onRequestGet(context: Context): Promise<Response> {
-  return new Response(`req: ${JSON.stringify(context)}`);
+  return Response.json(context);
 }
