@@ -13,8 +13,7 @@ type UserConfiguration = {
 	type: UserType;
 };
 
-const premiumUsers: string[] = ['c9c833cf-e0d1-4a43-b365-6cd1bed34a67'];
-const freeUsers: string[] = ['1f82ef25-1107-4a7d-b2c2-fad3b73c1d51'];
+const premiumUsers: string[] = ['c9c833cf-e0d1-4a43-b365-6cd1bed34a67', '1f82ef25-1107-4a7d-b2c2-fad3b73c1d51'];
 
 const getKey: RateLimitKeyFunc = (context: any): string => {
 	const _authorizationHeader: string = context.req.valid('header')['authorization'];
@@ -29,15 +28,6 @@ function getUserConfiguration(authorizationHeader: string): UserConfiguration | 
 		return {
 			key: authorizationHeader,
 			type: UserType.PREMIUM,
-		};
-	}
-
-	const _isFreeUser: boolean = freeUsers.find((key: string) => key == authorizationHeader) !== undefined;
-
-	if (_isFreeUser) {
-		return {
-			key: authorizationHeader,
-			type: UserType.FREE,
 		};
 	}
 
@@ -61,14 +51,5 @@ export const rateLimiter = async (context: any, next: Next) => {
 		});
 	}
 
-	switch (_userConfiguration.type) {
-		case UserType.FREE:
-			return await rateLimit(context.env.FREE_USER_LIMITER, getKey)(context, next);
-
-		case UserType.PREMIUM:
-			return await rateLimit(context.env.PREMIUM_USER_LIMITER, getKey)(context, next);
-
-		default:
-			return await rateLimit(context.env.FREE_USER_LIMITER, getKey)(context, next);
-	}
+	return await rateLimit(context.env.PREMIUM_USER_LIMITER, getKey)(context, next);
 };
