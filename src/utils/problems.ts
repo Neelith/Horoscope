@@ -15,3 +15,14 @@ export function badRequest(error: string): Problem {
 
 	return _badRequest;
 }
+
+export function internalServerError(error: string): Problem {
+	const _internalError: Problem = {
+		code: 500,
+		title: 'internal server error',
+		description: 'the server was not able to process the request due to internal errors',
+		error: error,
+	};
+
+	return _internalError;
+}

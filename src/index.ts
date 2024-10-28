@@ -11,36 +11,36 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { Context, Hono, Next } from 'hono';
+import { Context, Hono } from 'hono';
 import { horoscopeRoutes } from './routes/horoscope-routes';
-import { rateLimit, RateLimitBinding, RateLimitKeyFunc } from '@elithrar/workers-hono-rate-limit';
+import { RateLimitBinding } from '@elithrar/workers-hono-rate-limit';
 import { HTTPException } from 'hono/http-exception';
 import { badRequest } from './utils/problems';
+import { validator } from 'hono/validator';
+import { rateLimiter } from './utils/rate-limiter';
 
 type Bindings = {
 	FREE_USER_LIMITER: RateLimitBinding;
-};
-
-const getKey: RateLimitKeyFunc = (context: Context): string => {
-	const _authorizationHeader: string | undefined = context.req.header('Authorization');
-
-	//check _authorizationHeader is valid
-	if (!_authorizationHeader) {
-		throw new HTTPException(400, {
-			res: context.json(badRequest('Authorization header is missing'), 400),
-		});
-	}
-
-	return _authorizationHeader;
-};
-
-const rateLimiter = async (c: Context, next: Next) => {
-	return await rateLimit(c.env.FREE_USER_LIMITER, getKey)(c, next);
+	PREMIUM_USER_LIMITER: RateLimitBinding;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-app.use('*', rateLimiter);
+app.use(
+	'*',
+	validator('header', (value, context: Context) => {
+		const _authorizationHeader: string | undefined = context.req.header('Authorization')?.trim();
+
+		if (!_authorizationHeader) {
+			throw new HTTPException(400, {
+				res: context.json(badRequest('Authorization header is missing'), 400),
+			});
+		}
+
+		return { authorization: _authorizationHeader };
+	}),
+	rateLimiter
+);
 
 //routing
 app.get('/', (context) => context.text('Welcome!'));

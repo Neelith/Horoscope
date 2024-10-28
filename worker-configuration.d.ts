@@ -2,4 +2,5 @@
 
 interface Env {
 	FREE_USER_LIMITER: RateLimit;
+	PREMIUM_USER_LIMITER: RateLimit;
 }
