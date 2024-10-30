@@ -18,9 +18,9 @@ import { HTTPException } from 'hono/http-exception';
 import { badRequest } from './utils/problems';
 import { validator } from 'hono/validator';
 import { rateLimiter } from './utils/rate-limiter';
+import { Const } from './utils/const';
 
 type Bindings = {
-	FREE_USER_LIMITER: RateLimitBinding;
 	PREMIUM_USER_LIMITER: RateLimitBinding;
 };
 
@@ -29,15 +29,15 @@ const app = new Hono<{ Bindings: Bindings }>();
 app.use(
 	'*',
 	validator('header', (value, context: Context) => {
-		const _authorizationHeader: string | undefined = context.req.header('Authorization')?.trim();
+		const _authorizationHeader: string | undefined = context.req.header(Const.AuthorizationHeader)?.trim();
 
 		if (!_authorizationHeader) {
 			throw new HTTPException(400, {
-				res: context.json(badRequest('Authorization header is missing'), 400),
+				res: context.json(badRequest(`${Const.AuthorizationHeader} header is missing`), 400),
 			});
 		}
 
-		return { authorization: _authorizationHeader };
+		return { Authorization: _authorizationHeader };
 	}),
 	rateLimiter
 );

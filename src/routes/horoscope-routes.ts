@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { validator } from 'hono/validator';
 import { badRequest } from '../utils/problems';
 import { getHoroscope } from '../handlers/horoscope-handler';
+import { Const } from '../utils/const';
 
 export const horoscopeRoutes = new Hono().basePath('/horoscope');
 
@@ -21,12 +22,12 @@ const signs: string[] = [
 ];
 
 horoscopeRoutes.get(
-	'/:sign',
+	`/:${Const.sign}`,
 	validator('param', (value, context) => {
-		const _sign: string = value['sign']?.trim().toLowerCase();
+		const _sign: string = value[Const.sign]?.trim().toLowerCase();
 
 		if (!signs.includes(_sign)) {
-			return context.json(badRequest('sign is not valid'), 400);
+			return context.json(badRequest(`${Const.sign} is not valid`), 400);
 		}
 
 		return { sign: _sign };

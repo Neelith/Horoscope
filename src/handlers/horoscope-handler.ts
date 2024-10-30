@@ -1,21 +1,23 @@
+import { Const } from '../utils/const';
+
+type HoroscopeResponse = {
+	horoscope: string;
+};
+
 export async function getHoroscope(context: any): Promise<void> {
 	const _params: any = context.req.valid('param');
 
-	const _sign: string = _params['sign'];
+	const _sign: string = _params[Const.sign];
 
-	const _horoscope: string | null = getHoroscopeFromMap(_sign);
+	const _response: HoroscopeResponse = {
+		horoscope: getHoroscopeFromMap(_sign),
+	};
 
-	return context.json({ horoscope: _horoscope });
+	return context.json(_response);
 }
 
-function getHoroscopeFromMap(_sign: string): string | null {
-	const _horoscope: string | undefined = horoscopes.get(_sign);
-
-	if (!_horoscope) {
-		return null;
-	}
-
-	return _horoscope;
+function getHoroscopeFromMap(_sign: string): string {
+	return horoscopes.get(_sign)!;
 }
 
 const horoscopes: Map<string, string> = new Map([
