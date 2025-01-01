@@ -1,9 +1,4 @@
-export type Problem = {
-	error: string;
-	code: number;
-	title: string;
-	description: string;
-};
+import { Problem } from "../schemas/problem-schema";
 
 export function badRequest(error: string): Problem {
 	const _badRequest: Problem = {

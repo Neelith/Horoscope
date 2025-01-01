@@ -11,40 +11,31 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { Context, Hono } from 'hono';
 import { horoscopeRoutes } from './routes/horoscope-routes';
-import { RateLimitBinding } from '@elithrar/workers-hono-rate-limit';
-import { HTTPException } from 'hono/http-exception';
-import { badRequest } from './utils/problems';
-import { validator } from 'hono/validator';
-import { rateLimiter } from './utils/rate-limiter';
-import { Const } from './utils/const';
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { swaggerUI } from '@hono/swagger-ui';
 
-type Bindings = {
-	PREMIUM_USER_LIMITER: RateLimitBinding;
-};
+type Bindings = {};
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new OpenAPIHono<{ Bindings: Bindings }>();
 
-app.use(
-	'*',
-	validator('header', (value, context: Context) => {
-		const _authorizationHeader: string | undefined = context.req.header(Const.AuthorizationHeader)?.trim();
+//openapi
+app.doc('/doc', {
+	openapi: '3.0.0',
+	info: {
+		version: '1.0.0',
+		title: 'Horoscope AI',
+	},
+});
 
-		if (!_authorizationHeader) {
-			throw new HTTPException(400, {
-				res: context.json(badRequest(`${Const.AuthorizationHeader} header is missing`), 400),
-			});
-		}
-
-		return { Authorization: _authorizationHeader };
-	}),
-	rateLimiter
+app.get(
+	'/',
+	swaggerUI({
+		url: '/doc',
+	})
 );
 
-//routing
-app.get('/', (context) => context.text('Welcome!'));
-
+//routes
 app.route('/', horoscopeRoutes);
 
 export default app;

@@ -1,15 +1,12 @@
+import { HoroscopeGetResponse } from '../schemas/horoscope-schema';
 import { Const } from '../utils/const';
 
-type HoroscopeResponse = {
-	horoscope: string;
-};
-
-export async function getHoroscope(context: any): Promise<void> {
+export async function getHoroscope(context: any) {
 	const _params: any = context.req.valid('param');
 
-	const _sign: string = _params[Const.sign];
+	const _sign: string = _params[Const.paramSign];
 
-	const _response: HoroscopeResponse = {
+	const _response: HoroscopeGetResponse = {
 		horoscope: getHoroscopeFromMap(_sign),
 	};
 

@@ -1,7 +1,7 @@
 export class Const {
 	//Headers
-	static AuthorizationHeader: string = 'Authorization';
+	static authorizationHeader: string = 'Authorization';
 
 	//Params
-	static sign: string = 'sign';
+	static paramSign: string = 'sign';
 }
