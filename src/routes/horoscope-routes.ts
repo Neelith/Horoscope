@@ -1,4 +1,5 @@
 import { getHoroscope } from '../handlers/horoscope-handler';
+import { authentication } from '../middlewares/auth-middleware';
 import { HoroscopeGetResponseSchema } from '../schemas/horoscope-schema';
 import { ProblemSchema } from '../schemas/problem-schema';
 import { Const } from '../utils/const';
@@ -9,6 +10,9 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 const horoscopeBasePath = '/horoscope';
 
 export const horoscopeRoutes = new OpenAPIHono();
+
+//authentication & authorization
+horoscopeRoutes.use(authentication);
 
 const signs = [
 	'aries',
