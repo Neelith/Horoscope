@@ -7,13 +7,13 @@ export const authentication = createMiddleware(async (context, next) => {
 
 	//if the request has no X-Service-Key header is an unauthorized request
 	if (!_serviceKeyHeader) {
-		HoroscopeLogger.warn('authentication', 'X-Service-Key header is missing', context);
+		HoroscopeLogger.warn('authentication', 'X-Service-Key header is missing');
 		return context.newResponse(null, 401);
 	}
 
 	//if the request has the X-Service-Key header but it's not the same defined in the env the response is 403 forbidden
 	if (context.env.HOROSCOPE_SERVICE_KEY !== _serviceKeyHeader) {
-		HoroscopeLogger.warn('authentication', "X-Service-Key header is present but it's not valid", context);
+		HoroscopeLogger.warn('authentication', "X-Service-Key header is present but it's not valid");
 		return context.newResponse(null, 403);
 	}
 
