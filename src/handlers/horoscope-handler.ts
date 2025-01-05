@@ -1,20 +1,31 @@
 import { HoroscopeGetResponse } from '../schemas/horoscope-schema';
+import { Problem } from '../schemas/problem-schema';
 import { Const } from '../utils/const';
+import { HoroscopeLogger } from '../utils/logger';
+import { internalServerError } from '../utils/problems';
 
 export async function getHoroscope(context: any) {
 	const _params: any = context.req.valid('param');
 
 	const _sign: string = _params[Const.paramSign];
 
+	const _horoscope: string | undefined = getHoroscopeFromMap(_sign);
+
+	if (!_horoscope) {
+		HoroscopeLogger.error('getHoroscope', 'cannot get the horoscope for sign', _sign);
+		const _problem: Problem = internalServerError(`cannot get the horoscope for sign ${_sign}`);
+		return context.json(_problem, 500);
+	}
+
 	const _response: HoroscopeGetResponse = {
-		horoscope: getHoroscopeFromMap(_sign),
+		horoscope: _horoscope,
 	};
 
 	return context.json(_response);
 }
 
-function getHoroscopeFromMap(_sign: string): string {
-	return horoscopes.get(_sign)!;
+function getHoroscopeFromMap(_sign: string): string | undefined {
+	return horoscopes.get(_sign);
 }
 
 const horoscopes: Map<string, string> = new Map([
@@ -25,7 +36,7 @@ const horoscopes: Map<string, string> = new Map([
 		'cancer',
 		"Take some time for self-care and relaxation. It's important to recharge your batteries and take care of your emotional well-being.",
 	],
-	['leo', 'Your creativity is at its peak today. Use this energy to work on artistic projects or find new ways to express yourself.'],
+	//['leo', 'Your creativity is at its peak today. Use this energy to work on artistic projects or find new ways to express yourself.'],
 	['virgo', 'Pay attention to details and stay organized. This will help you achieve your goals and avoid any potential setbacks.'],
 	['libra', 'Balance is important today. Make sure to find time for both work and play, and maintain harmony in your relationships.'],
 	[
