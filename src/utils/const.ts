@@ -5,4 +5,5 @@ export class Const {
 
 	//Params
 	static paramSign: string = 'sign';
+	static paramHoroscope: string = 'horoscope';
 }

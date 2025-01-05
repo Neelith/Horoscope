@@ -11,11 +11,9 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { horoscopeRoutes } from './routes/horoscope-routes';
+import { signsRoutes } from './routes/horoscope-routes';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { swaggerUI } from '@hono/swagger-ui';
-import { Const } from './utils/const';
-import { authentication } from './middlewares/auth-middleware';
 
 type Bindings = {
 	HOROSCOPE_SERVICE_KEY: string;
@@ -40,6 +38,6 @@ app.get(
 );
 
 //routes
-app.route('/', horoscopeRoutes);
+app.route('/', signsRoutes);
 
 export default app;

@@ -8,18 +8,19 @@ import { createRoute, z } from '@hono/zod-openapi';
 import { OpenAPIHono } from '@hono/zod-openapi';
 
 //base path
-const horoscopeBasePath = '/horoscope';
+const signsBasePath = '/signs';
 
-export const horoscopeRoutes = new OpenAPIHono();
+export const signsRoutes = new OpenAPIHono();
 
 //authentication & authorization
-horoscopeRoutes.use(authentication);
+signsRoutes.use(authentication);
 
-//horoscope/sign route
-horoscopeRoutes.openapi(
+//signs/{sign}/horoscope route
+signsRoutes.openapi(
 	createRoute({
+		tags: ['signs'],
 		method: 'get',
-		path: `${horoscopeBasePath}/{${Const.paramSign}}`,
+		path: `${signsBasePath}/{${Const.paramSign}}/${Const.paramHoroscope}`,
 		request: {
 			params: z.object({
 				sign: z.enum(signs).openapi({
