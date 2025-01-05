@@ -1,3 +1,4 @@
+import { signs } from '../dtos/signs';
 import { getHoroscope } from '../handlers/horoscope-handler';
 import { authentication } from '../middlewares/auth-middleware';
 import { HoroscopeGetResponseSchema } from '../schemas/horoscope-schema';
@@ -14,25 +15,8 @@ export const horoscopeRoutes = new OpenAPIHono();
 //authentication & authorization
 horoscopeRoutes.use(authentication);
 
-const signs = [
-	'aries',
-	'taurus',
-	'gemini',
-	'cancer',
-	'leo',
-	'virgo',
-	'libra',
-	'scorpio',
-	'sagittarius',
-	'capricorn',
-	'aquarius',
-	'pisces',
-] as const;
-
-//https://github.com/honojs/middleware/tree/main/packages/zod-openapi
-
+//horoscope/sign route
 horoscopeRoutes.openapi(
-	//route
 	createRoute({
 		method: 'get',
 		path: `${horoscopeBasePath}/{${Const.paramSign}}`,
@@ -78,6 +62,5 @@ horoscopeRoutes.openapi(
 			},
 		},
 	}),
-	//handler
 	async (context) => await getHoroscope(context)
 );
