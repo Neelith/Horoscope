@@ -36,7 +36,7 @@ const horoscopes: Map<string, string> = new Map([
 		'cancer',
 		"Take some time for self-care and relaxation. It's important to recharge your batteries and take care of your emotional well-being.",
 	],
-	//['leo', 'Your creativity is at its peak today. Use this energy to work on artistic projects or find new ways to express yourself.'],
+	['leo', 'Your creativity is at its peak today. Use this energy to work on artistic projects or find new ways to express yourself.'],
 	['virgo', 'Pay attention to details and stay organized. This will help you achieve your goals and avoid any potential setbacks.'],
 	['libra', 'Balance is important today. Make sure to find time for both work and play, and maintain harmony in your relationships.'],
 	[
